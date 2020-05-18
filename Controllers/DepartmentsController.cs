@@ -25,7 +25,7 @@ namespace HW01.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Department>>> GetDepartment()
         {
-            return await _context.Department.ToListAsync();
+            return await _context.Department.Where(c => c.isDeleted == null || c.isDeleted == false).ToListAsync();
         }
 
         // GET: api/Departments/5
@@ -34,7 +34,7 @@ namespace HW01.Controllers
         {
             var department = await _context.Department.FindAsync(id);
 
-            if (department == null)
+            if (department == null || (department.isDeleted.HasValue && department.isDeleted.Value))
             {
                 return NotFound();
             }
@@ -111,7 +111,7 @@ namespace HW01.Controllers
 
         // DELETE: api/Departments/5
         [HttpDelete("{id}")]
-        public ActionResult<Department> DeleteDepartment(int id)
+        public async Task<ActionResult<Department>> DeleteDepartment(int id)
         {
             //var department = await _context.Department.FindAsync(id);
             var department = _context.Department.Find(id);
@@ -119,15 +119,15 @@ namespace HW01.Controllers
             {
                 return NotFound();
             }
-
+            department.isDeleted = true;
             //_context.Department.Remove(department);
-            //await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
 
-            #region Use stored procedure
-            SqlParameter departmentID = new SqlParameter("@DepartmentID", department.DepartmentId);
-            SqlParameter rowVersion = new SqlParameter("@RowVersion_Original", department.RowVersion);
-            _context.Database.ExecuteSqlRaw("execute Department_Delete @DepartmentID,@RowVersion_Original", departmentID, rowVersion);
-            #endregion
+            //#region Use stored procedure
+            //SqlParameter departmentID = new SqlParameter("@DepartmentID", department.DepartmentId);
+            //SqlParameter rowVersion = new SqlParameter("@RowVersion_Original", department.RowVersion);
+            //_context.Database.ExecuteSqlRaw("execute Department_Delete @DepartmentID,@RowVersion_Original", departmentID, rowVersion);
+            //#endregion
 
             return department;
         }
