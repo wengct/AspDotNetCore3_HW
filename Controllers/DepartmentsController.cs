@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using HW01.Models;
+using Microsoft.Data.SqlClient;
 
 namespace HW01.Controllers
 {
@@ -45,18 +46,30 @@ namespace HW01.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutDepartment(int id, Department department)
+        public ActionResult PutDepartment(int id, Department department)
         {
             if (id != department.DepartmentId)
             {
                 return BadRequest();
             }
 
-            _context.Entry(department).State = EntityState.Modified;
+            //_context.Entry(department).State = EntityState.Modified;
 
             try
             {
-                await _context.SaveChangesAsync();
+                //await _context.SaveChangesAsync();
+
+                #region Use stored procedure
+                byte[] _rowVersion = _context.Department.Find(id).RowVersion;
+                SqlParameter departmentID = new SqlParameter("@DepartmentID", department.DepartmentId);
+                SqlParameter name = new SqlParameter("@Name", department.Name);
+                SqlParameter budget = new SqlParameter("@Budget", department.Budget);
+                SqlParameter startDate = new SqlParameter("@StartDate", department.StartDate);
+                SqlParameter instructorID = new SqlParameter("@InstructorID", department.InstructorId);
+                SqlParameter rowVersion = new SqlParameter("@RowVersion_Original", _rowVersion);
+                _context.Database.ExecuteSqlRaw("execute Department_Update @DepartmentID,@Name,@Budget,@StartDate,@InstructorID,@RowVersion_Original",
+                    departmentID, name, budget, startDate, instructorID, rowVersion);
+                #endregion
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -77,26 +90,42 @@ namespace HW01.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPost]
-        public async Task<ActionResult<Department>> PostDepartment(Department department)
+        public ActionResult<Department> PostDepartment(Department department)
         {
-            _context.Department.Add(department);
-            await _context.SaveChangesAsync();
+            //_context.Department.Add(department);
+            //await _context.SaveChangesAsync();
+
+            #region Use stored procedure
+            SqlParameter name = new SqlParameter("@Name", department.Name);
+            SqlParameter budget = new SqlParameter("@Budget", department.Budget);
+            SqlParameter startDate = new SqlParameter("@StartDate", department.StartDate);
+            SqlParameter instructorID = new SqlParameter("@InstructorID", department.InstructorId);
+            department.DepartmentId = _context.Department.FromSqlRaw("execute Department_Insert @Name,@Budget,@StartDate,@InstructorID",
+                name, budget, startDate, instructorID).Select(c => c.DepartmentId).ToList().First();
+            #endregion
 
             return CreatedAtAction("GetDepartment", new { id = department.DepartmentId }, department);
         }
 
         // DELETE: api/Departments/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Department>> DeleteDepartment(int id)
+        public ActionResult<Department> DeleteDepartment(int id)
         {
-            var department = await _context.Department.FindAsync(id);
+            //var department = await _context.Department.FindAsync(id);
+            var department = _context.Department.Find(id);
             if (department == null)
             {
                 return NotFound();
             }
 
-            _context.Department.Remove(department);
-            await _context.SaveChangesAsync();
+            //_context.Department.Remove(department);
+            //await _context.SaveChangesAsync();
+
+            #region Use stored procedure
+            SqlParameter departmentID = new SqlParameter("@DepartmentID", department.DepartmentId);
+            SqlParameter rowVersion = new SqlParameter("@RowVersion_Original", department.RowVersion);
+            _context.Database.ExecuteSqlRaw("execute Department_Delete @DepartmentID,@RowVersion_Original", departmentID, rowVersion);
+            #endregion
 
             return department;
         }
