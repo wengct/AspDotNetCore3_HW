@@ -105,5 +105,17 @@ namespace HW01.Controllers
         {
             return _context.Course.Any(e => e.CourseId == id);
         }
+
+        [HttpGet("GetCourseStudentCount")]
+        public async Task<ActionResult<IEnumerable<VwCourseStudentCount>>> GetCourseStudentCount()
+        {
+            return await _context.VwCourseStudentCount.ToListAsync();
+        }
+
+        [HttpGet("GetCourseStudents")]
+        public async Task<ActionResult<IEnumerable<VwCourseStudents>>> GetCourseStudents()
+        {
+            return await _context.VwCourseStudents.ToListAsync();
+        }
     }
 }
