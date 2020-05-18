@@ -46,30 +46,32 @@ namespace HW01.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPut("{id}")]
-        public ActionResult PutDepartment(int id, Department department)
+        public async Task<ActionResult> PutDepartment(int id, Department department)
         {
             if (id != department.DepartmentId)
             {
                 return BadRequest();
             }
 
-            //_context.Entry(department).State = EntityState.Modified;
+            byte[] _rowVersion = _context.Department.Where(c => c.DepartmentId == id).Select(c => c.RowVersion).FirstOrDefault();
+            department.RowVersion = _rowVersion;
+            department.DateModified = DateTime.Now;
+            _context.Entry(department).State = EntityState.Modified;
 
             try
             {
-                //await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
 
-                #region Use stored procedure
-                byte[] _rowVersion = _context.Department.Find(id).RowVersion;
-                SqlParameter departmentID = new SqlParameter("@DepartmentID", department.DepartmentId);
-                SqlParameter name = new SqlParameter("@Name", department.Name);
-                SqlParameter budget = new SqlParameter("@Budget", department.Budget);
-                SqlParameter startDate = new SqlParameter("@StartDate", department.StartDate);
-                SqlParameter instructorID = new SqlParameter("@InstructorID", department.InstructorId);
-                SqlParameter rowVersion = new SqlParameter("@RowVersion_Original", _rowVersion);
-                _context.Database.ExecuteSqlRaw("execute Department_Update @DepartmentID,@Name,@Budget,@StartDate,@InstructorID,@RowVersion_Original",
-                    departmentID, name, budget, startDate, instructorID, rowVersion);
-                #endregion
+                //#region Use stored procedure
+                //SqlParameter departmentID = new SqlParameter("@DepartmentID", department.DepartmentId);
+                //SqlParameter name = new SqlParameter("@Name", department.Name);
+                //SqlParameter budget = new SqlParameter("@Budget", department.Budget);
+                //SqlParameter startDate = new SqlParameter("@StartDate", department.StartDate);
+                //SqlParameter instructorID = new SqlParameter("@InstructorID", department.InstructorId);
+                //SqlParameter rowVersion = new SqlParameter("@RowVersion_Original", _rowVersion);
+                //_context.Database.ExecuteSqlRaw("execute Department_Update @DepartmentID,@Name,@Budget,@StartDate,@InstructorID,@RowVersion_Original",
+                //    departmentID, name, budget, startDate, instructorID, rowVersion);
+                //#endregion
             }
             catch (DbUpdateConcurrencyException)
             {
