@@ -134,5 +134,12 @@ namespace HW01.Controllers
         {
             return _context.Department.Any(e => e.DepartmentId == id);
         }
+
+
+        [HttpGet("GetDepartmentCourseCount")]
+        public async Task<ActionResult<IEnumerable<VwDepartmentCourseCount>>> GetDepartmentCourseCount()
+        {
+            return await _context.VwDepartmentCourseCount.FromSqlRaw("SELECT * FROM [dbo].[vwDepartmentCourseCount]").ToListAsync();
+        }
     }
 }
