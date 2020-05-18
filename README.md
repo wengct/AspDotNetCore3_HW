@@ -11,4 +11,5 @@
  <li>請用 Raw SQL Query 的方式查詢 vwDepartmentCourseCount 檢視表的內容</li>
  <li>請修改 Course, Department, Person 表格，新增 DateModified 欄位(datetime)，並且這三個表格的資料透過 Web API 更新時，都要自動更新該欄位為更新當下的時間 (請新增資料庫移轉紀錄)</li>
  <li>請修改 Course, Department, Person 表格欄位，新增 IsDeleted 欄位 (bit)，且讓所有刪除這三個表格資料的 API 都不能真的刪除資料，而是標記刪除即可，標記刪除後，在 GET 資料的時候不能輸出該筆資料。(請新增資料庫移轉紀錄)</li>
-  </ul>
+</ul>
+<p>開發耗時3:51:35</p>
