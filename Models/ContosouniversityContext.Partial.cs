@@ -7,6 +7,7 @@ namespace HW01.Models
 {
     public partial class ContosouniversityContext : DbContext
     {
+        public DbSet<部門課程表數量> 部門課程表數量 { get; set; }
         public override int SaveChanges()
         {
             var entities = this.ChangeTracker.Entries();

@@ -43,11 +43,47 @@ namespace HW01.Controllers
         }
 
         // GET: api/departments/5/courses
+        [HttpGet("{id}/num")]
+        public async Task<ActionResult<IList<部門課程表數量>>> GetDepartmentCoursesNum(int id)
+        {
+            var department = await _context.部門課程表數量.FromSqlRaw($@"
+               SELECT 
+                    DepartmentId AS Id, 
+                    Name, 
+                (
+                    SELECT COUNT(*)
+                    FROM Course c
+                    WHERE c.DepartmentId = d.DepartmentId
+                ) AS num
+                FROM Department d where d.DepartmentId = {id}").ToListAsync();
+
+            return department;
+        }
+         
+        // GET: api/departments/5/courses
+        [HttpGet("num")]
+        public async Task<ActionResult<IList<部門課程表數量>>> GetDepartmentCoursesNumAll()
+        {
+            var department = await _context.部門課程表數量.FromSqlRaw($@"
+               SELECT 
+                    DepartmentId AS Id, 
+                    Name, 
+                (
+                    SELECT COUNT(*)
+                    FROM Course c
+                    WHERE c.DepartmentId = d.DepartmentId
+                ) AS num
+                FROM Department d").ToListAsync();
+                
+            return department;
+        }
+
+        // GET: api/departments/5/courses
         [HttpGet("{id}/courses")]
         public async Task<ActionResult<IList<Course>>> GetDepartmentCourses(int id)
         {
             var department = await _context.Department.Include("Course")
-                                                      .Where(c=>c.DepartmentId == id).FirstOrDefaultAsync();
+                                                      .Where(c => c.DepartmentId == id).FirstOrDefaultAsync();
 
             if (department == null || (department.isDeleted.HasValue && department.isDeleted.Value))
             {
