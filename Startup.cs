@@ -29,7 +29,9 @@ namespace HW01
         {
             //DI
             services.AddDbContext<ContosouniversityContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"))
+                       //.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking) //在DI設定預設關閉快取
+                );
 
 
             services.AddControllers();
