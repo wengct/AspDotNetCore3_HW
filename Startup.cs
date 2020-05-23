@@ -17,9 +17,9 @@ namespace HW01
 {
     public class Startup
     {
-        public static readonly ILoggerFactory MyLoggerFactory = 
+        public static readonly ILoggerFactory MyLoggerFactory =
         LoggerFactory.Create(
-            builder=>{builder.AddConsole();}
+            builder => { builder.AddConsole(); }
         );
         public Startup(IConfiguration configuration)
         {
@@ -35,11 +35,13 @@ namespace HW01
             services.AddDbContext<ContosouniversityContext>(options =>
                 options.UseLoggerFactory(MyLoggerFactory)
                         .UseSqlServer(Configuration.GetConnectionString("DefaultConnection"))
-                       //.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking) //�bDI�]�w�w�]�����֨�
-                ) ;
+                //.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking) //�bDI�]�w�w�]�����֨�
+                );
 
+            
+            services.AddControllers()
+                    .AddNewtonsoftJson();
 
-            services.AddControllers();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
