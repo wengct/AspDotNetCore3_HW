@@ -17,6 +17,10 @@ namespace HW01
 {
     public class Startup
     {
+        public static readonly ILoggerFactory MyLoggerFactory = 
+        LoggerFactory.Create(
+            builder=>{builder.AddConsole();}
+        );
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -29,9 +33,10 @@ namespace HW01
         {
             //DI
             services.AddDbContext<ContosouniversityContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"))
-                       //.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking) //¦bDI³]©w¹w³]Ãö³¬§Ö¨ú
-                );
+                options.UseLoggerFactory(MyLoggerFactory)
+                        .UseSqlServer(Configuration.GetConnectionString("DefaultConnection"))
+                       //.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking) //ï¿½bDIï¿½]ï¿½wï¿½wï¿½]ï¿½ï¿½ï¿½ï¿½ï¿½Ö¨ï¿½
+                ) ;
 
 
             services.AddControllers();
