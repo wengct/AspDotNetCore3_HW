@@ -35,10 +35,10 @@ namespace HW01
             services.AddDbContext<ContosouniversityContext>(options =>
                 options.UseLoggerFactory(MyLoggerFactory)
                         .UseSqlServer(Configuration.GetConnectionString("DefaultConnection"))
-                //.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking) //�bDI�]�w�w�]�����֨�
+                //.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking) //在DI中設定不要開啟dbContext的快取功能
                 );
 
-            
+
             services.AddControllers()
                     .AddNewtonsoftJson();
 
