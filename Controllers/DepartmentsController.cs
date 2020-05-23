@@ -42,6 +42,20 @@ namespace HW01.Controllers
             return department;
         }
 
+        // GET: api/departments/5/courses
+        [HttpGet("{id}/courses")]
+        public async Task<ActionResult<IList<Course>>> GetDepartmentCourses(int id)
+        {
+            var department = await _context.Department.Include("Course")
+                                                      .Where(c=>c.DepartmentId == id).FirstOrDefaultAsync();
+
+            if (department == null || (department.isDeleted.HasValue && department.isDeleted.Value))
+            {
+                return NotFound();
+            }
+
+            return department.Course.ToList();
+        }
         // PUT: api/Departments/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
