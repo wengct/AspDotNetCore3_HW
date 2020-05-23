@@ -51,7 +51,7 @@ namespace HW01.Controllers
             {
                 return BadRequest();
             }
-            course.DateModified = DateTime.Now;
+            //course.DateModified = DateTime.Now;
             _context.Entry(course).State = EntityState.Modified;
 
             try

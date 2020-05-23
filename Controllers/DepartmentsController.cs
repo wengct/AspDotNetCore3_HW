@@ -55,7 +55,7 @@ namespace HW01.Controllers
 
             byte[] _rowVersion = _context.Department.Where(c => c.DepartmentId == id).Select(c => c.RowVersion).FirstOrDefault();
             department.RowVersion = _rowVersion;
-            department.DateModified = DateTime.Now;
+            //department.DateModified = DateTime.Now;
             _context.Entry(department).State = EntityState.Modified;
 
             try
