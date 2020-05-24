@@ -12,7 +12,7 @@ namespace HW01.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [ApiConventionType(typeof(DefaultApiConventions))]
+    //[ApiConventionType(typeof(DefaultApiConventions))]
     public class DepartmentsController : ControllerBase
     {
         private readonly ContosouniversityContext _context;
@@ -31,6 +31,9 @@ namespace HW01.Controllers
 
         // GET: api/Departments/5
         [HttpGet("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesDefaultResponseType]
         public async Task<ActionResult<Department>> GetDepartment(int id)
         {
             var department = await _context.Department.FindAsync(id);
@@ -81,6 +84,9 @@ namespace HW01.Controllers
 
         // GET: api/departments/5/courses
         [HttpGet("{id}/courses")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesDefaultResponseType]
         public async Task<ActionResult<IList<Course>>> GetDepartmentCourses(int id)
         {
             var department = await _context.Department.Include("Course")
@@ -97,6 +103,10 @@ namespace HW01.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPut("{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesDefaultResponseType]
         public async Task<ActionResult> PutDepartment(int id, Department department)
         {
             if (id != department.DepartmentId)
@@ -143,6 +153,8 @@ namespace HW01.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPost]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesDefaultResponseType]
         public ActionResult<Department> PostDepartment(Department department)
         {
             //_context.Department.Add(department);
@@ -162,6 +174,9 @@ namespace HW01.Controllers
 
         // DELETE: api/Departments/5
         [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesDefaultResponseType]
         public async Task<ActionResult<Department>> DeleteDepartment(int id)
         {
             //var department = await _context.Department.FindAsync(id);
