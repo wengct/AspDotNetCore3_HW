@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using MyMVC.Models;
+using MyMVC.Utils;
 
 namespace MyMVC.Controllers
 {
@@ -13,8 +14,10 @@ namespace MyMVC.Controllers
     {
         private readonly ILogger<HomeController> _logger;
 
-        public HomeController(ILogger<HomeController> logger)
+        private readonly CoursesClient client;
+        public HomeController(ILogger<HomeController> logger, CoursesClient client)
         {
+            this.client = client;
             _logger = logger;
         }
 
@@ -22,6 +25,13 @@ namespace MyMVC.Controllers
         {
             return View();
         }
+
+        public async Task<IActionResult> Course()
+        {
+            var course = await this.client.GetCourseAsync(1);
+            return View(course);
+        }
+
 
         public IActionResult Privacy()
         {

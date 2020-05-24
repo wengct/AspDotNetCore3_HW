@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using MyMVC.Utils;
 
 namespace MyMVC
 {
@@ -24,6 +25,11 @@ namespace MyMVC
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+
+            //方法一，使用不推薦寫法，註冊舊版的HttpClient
+            services.AddSingleton<System.Net.Http.HttpClient, System.Net.Http.HttpClient>();
+
+            services.AddSingleton<CoursesClient, CoursesClient>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
