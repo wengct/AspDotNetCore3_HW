@@ -12,6 +12,7 @@ namespace HW01.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [ApiConventionType(typeof(DefaultApiConventions))]
     public class DepartmentsController : ControllerBase
     {
         private readonly ContosouniversityContext _context;
