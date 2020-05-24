@@ -27,7 +27,11 @@ namespace MyMVC
             services.AddControllersWithViews();
 
             //方法一，使用不推薦寫法，註冊舊版的HttpClient
-            services.AddSingleton<System.Net.Http.HttpClient, System.Net.Http.HttpClient>();
+            //services.AddSingleton<System.Net.Http.HttpClient, System.Net.Http.HttpClient>();
+
+            //方法二，使用推薦的寫法
+            //這個是註冊HttpClientFactory，但NSwagStudio產生出來的Client預設是HttpClient，故產生出來的檔案要調整取得HttpClient的寫法。
+            services.AddHttpClient();
 
             services.AddSingleton<CoursesClient, CoursesClient>();
         }
