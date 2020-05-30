@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using HW01.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace HW01.Controllers
 {
@@ -23,6 +24,7 @@ namespace HW01.Controllers
 
         // GET: api/Courses
         [HttpGet]
+        [Authorize]
         public async Task<ActionResult<IEnumerable<Course>>> GetCourse()
         {
             return await _context.Course.Where(c => c.isDeleted == null || c.isDeleted == false).ToListAsync();
@@ -83,7 +85,7 @@ namespace HW01.Controllers
             _context.Course.Add(course);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetCourse", new { id = course.CourseId }, course);
+            return CreatedAtRoute("GetCourse", new { id = course.CourseId }, course);
         }
 
         // DELETE: api/Courses/5
